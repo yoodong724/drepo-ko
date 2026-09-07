@@ -1,2 +1,3 @@
 *.tsv whitespace=-blank-at-eol
 tools/installer/* -text
+tools/installer/*.cmd whitespace=cr-at-eol
