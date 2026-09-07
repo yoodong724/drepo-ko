@@ -1,0 +1,2 @@
+*.tsv whitespace=-blank-at-eol
+tools/installer/* -text

@@ -1,0 +1,10 @@
+.tools/
+build/
+drepo/
+dist/
+__pycache__/
+*.pyc
+data/localization/segments.tsv
+*.pck
+*.exe
+*.dll
