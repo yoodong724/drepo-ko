@@ -12,6 +12,7 @@ from __future__ import annotations
 
 import argparse
 from collections import defaultdict
+import csv
 import hashlib
 import json
 import os
@@ -62,6 +63,34 @@ ASSIGNMENT_FIELDS = tuple(
 
 class MigrationError(ValueError):
     """The inputs cannot be migrated without guessing."""
+
+
+def _assignment_notes(value: str, assignment_id: str) -> dict[str, Any]:
+    """Decode canonical JSON and the CSV-quoted legacy representation.
+
+    Older assignment data was once emitted through ``csv.DictWriter`` even
+    though canonical TSV readers deliberately use ``QUOTE_NONE``.  Accept that
+    exact one-field representation during migration so the next canonical
+    write normalizes it without weakening parsing for arbitrary malformed data.
+    """
+
+    candidates = [value or "{}"]
+    if len(value) >= 2 and value.startswith('"') and value.endswith('"'):
+        try:
+            decoded = next(csv.reader([value], delimiter="\t"))
+        except csv.Error:
+            decoded = []
+        if len(decoded) == 1:
+            candidates.append(decoded[0])
+    for candidate in candidates:
+        try:
+            result = json.loads(candidate)
+        except json.JSONDecodeError:
+            continue
+        if not isinstance(result, dict):
+            raise MigrationError(f"assignment {assignment_id} notes must be a JSON object")
+        return result
+    raise MigrationError(f"assignment {assignment_id} notes are not JSON")
 
 
 def sha256_file(path: Path) -> str:
@@ -560,9 +589,19 @@ def migrate_assignments(
         seen_ids.add(assignment_id)
         source_build = row.get("source_build", "")
         if source_build != from_build:
-            raise MigrationError(
-                f"assignment {assignment_id} has unexpected source_build {source_build!r}"
+            # Removed rows deliberately retain the build where their segment
+            # last existed. Keep that closed historical record across later
+            # migrations while still normalizing its notes representation.
+            if row.get("status") != "CANCELLED":
+                raise MigrationError(
+                    f"assignment {assignment_id} has unexpected source_build {source_build!r}"
+                )
+            note_data = _assignment_notes(row.get("notes", ""), assignment_id)
+            row["notes"] = json.dumps(
+                note_data, ensure_ascii=False, separators=(",", ":"), sort_keys=True
             )
+            output.append(row)
+            continue
         old_segment_id = row.get("segment_id", "")
         removed = old_segment_id in removed_ids
         if removed:
@@ -579,12 +618,7 @@ def migrate_assignments(
             if requested:
                 row["status"] = requested
                 counts["changed_status"] += 1
-        try:
-            note_data = json.loads(row.get("notes", "") or "{}")
-        except json.JSONDecodeError as exc:
-            raise MigrationError(f"assignment {assignment_id} notes are not JSON") from exc
-        if not isinstance(note_data, dict):
-            raise MigrationError(f"assignment {assignment_id} notes must be a JSON object")
+        note_data = _assignment_notes(row.get("notes", ""), assignment_id)
         migration_note: dict[str, str] = {"from_build": from_build, "to_build": to_build}
         if removed:
             migration_note["removed_from_target"] = "true"

@@ -24,9 +24,9 @@ from typing import Any, Iterable, Mapping, Sequence, Union
 import zlib
 
 
-TARGET_BUILD_ID = "DGR-WIN-1.0.4-3ff472fb"
-TARGET_EXE_SHA256 = "4419c6a33260e6fabb7a21a13a688da6a619d8dc2f9abe4d5115fd09178c2546"
-TARGET_PCK_SHA256 = "3ff472fb1240009258f617f87759d4b6fe576b2b85577ecb4fdcecfa9ccf3dec"
+TARGET_BUILD_ID = "DGR-WIN-1.0.5-b3e7048e"
+TARGET_EXE_SHA256 = "1de3edb8e10c66412a5e0d76ca44a2b70ad791d8b08f17135aae36b9bc369bf5"
+TARGET_PCK_SHA256 = "b3e7048e62421e74b8b485f242fbec3f14cde94d452309f6d57d957623821399"
 RELEASE_SCHEMA_VERSION = 2
 DELTA_VERSION = 1
 DELTA_MAGIC = b"DREPO-KO-DELTA01"
@@ -47,7 +47,7 @@ INSTALLER_SOURCE_DIR = Path(__file__).resolve().parent / "installer"
 # Pinned so a packaged installer can never drift from the reviewed source.
 # tests/test_patch_release.py fails if these stop matching tools/installer/.
 INSTALLER_SHA256 = {
-    INSTALLER_PS1_NAME: "9b86df380db2fa7368bb497816dce1e417e4ecffdfd3e68409f93ca4df92eeeb",
+    INSTALLER_PS1_NAME: "fe5838bb2fa1d196f048b3e903485a4bd5f85975cc943715af417a48733b9d54",
     INSTALL_CMD_NAME: "95c3d2a846bfe992f7a9be3072d28bc4231389d6e137338e554e39dd6fa5454d",
     UNINSTALL_CMD_NAME: "de5566f5bd5f58344ea425fc09e505d4351e98e8d111604da5af31304e7e9705",
 }
@@ -89,7 +89,7 @@ Python을 비롯한 어떤 프로그램도 따로 설치하지 않습니다.
 drepo/
   drepo.exe
   drepo.pck
-  death-game-report-ko-v0.1.0-rc10/
+  death-game-report-ko-v1.0.5/
     install.cmd
     uninstall.cmd
     patch_release.ps1

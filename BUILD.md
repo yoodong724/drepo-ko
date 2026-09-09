@@ -1,16 +1,16 @@
 # 소스 빌드
 
-Linux/WSL, Python 3.10 이상, Windows판 게임 1.0.4 원본이 필요합니다. 게임 파일은 `drepo/1.0.4/`에 둡니다. 아래 명령은 저장소 루트에서 실행합니다.
+Linux/WSL, Python 3.10 이상, Windows판 게임 1.0.5 원본이 필요합니다. 게임 파일은 `drepo/1.0.5/`에 둡니다. 아래 명령은 저장소 루트에서 실행합니다.
 
 ```bash
 bash scripts/bootstrap_gdre.sh
 bash scripts/bootstrap_godot.sh
 mkdir -p build/localization/canonical
-.tools/gdre-v2.6.4/gdre_tools.x86_64 --headless --recover=drepo/1.0.4/drepo.pck --output=build/localization/recovered
+.tools/gdre-v2.6.4/gdre_tools.x86_64 --headless --recover=drepo/1.0.5/drepo.pck --output=build/localization/recovered
 python3 tools/prepare_public_source.py --translations data/localization/translations.tsv --recovered-dir build/localization/recovered --output build/localization/canonical/segments.tsv
 python3 tools/integrate.py \
-  --build-id DGR-WIN-1.0.4-3ff472fb \
-  --source-exe drepo/1.0.4/drepo.exe --source-pck drepo/1.0.4/drepo.pck \
+  --build-id DGR-WIN-1.0.5-b3e7048e \
+  --source-exe drepo/1.0.5/drepo.exe --source-pck drepo/1.0.5/drepo.pck \
   --recovered-dir build/localization/recovered \
   --segments build/localization/canonical/segments.tsv \
   --source-manifest data/localization/source_manifest.tsv \
@@ -26,13 +26,13 @@ python3 tools/integrate.py \
   --output-root build/localization/integrated
 mkdir -p dist
 python3 tools/patch_release.py create \
-  --source-exe drepo/1.0.4/drepo.exe --source-pck drepo/1.0.4/drepo.pck \
+  --source-exe drepo/1.0.5/drepo.exe --source-pck drepo/1.0.5/drepo.pck \
   --localized-pck build/localization/integrated/drepo.ko.pck \
   --integration-manifest build/localization/integrated/integration-manifest.json \
-  --output-dir dist/death-game-report-ko-v0.1.0-rc10
+  --output-dir dist/death-game-report-ko-v1.0.5
 python3 tools/patch_release.py audit \
-  --package-dir dist/death-game-report-ko-v0.1.0-rc10 \
-  --source-exe drepo/1.0.4/drepo.exe --source-pck drepo/1.0.4/drepo.pck
+  --package-dir dist/death-game-report-ko-v1.0.5 \
+  --source-exe drepo/1.0.5/drepo.exe --source-pck drepo/1.0.5/drepo.pck
 python3 -m unittest tests.test_patch_release -q
 ```
 

@@ -31,9 +31,9 @@ param(
 Set-StrictMode -Version 2.0
 $ErrorActionPreference = 'Stop'
 
-$script:TargetBuildId = 'DGR-WIN-1.0.4-3ff472fb'
-$script:TargetExeSha256 = '4419c6a33260e6fabb7a21a13a688da6a619d8dc2f9abe4d5115fd09178c2546'
-$script:TargetPckSha256 = '3ff472fb1240009258f617f87759d4b6fe576b2b85577ecb4fdcecfa9ccf3dec'
+$script:TargetBuildId = 'DGR-WIN-1.0.5-b3e7048e'
+$script:TargetExeSha256 = '1de3edb8e10c66412a5e0d76ca44a2b70ad791d8b08f17135aae36b9bc369bf5'
+$script:TargetPckSha256 = 'b3e7048e62421e74b8b485f242fbec3f14cde94d452309f6d57d957623821399'
 $script:ReleaseSchemaVersion = 2
 $script:DeltaVersion = 1
 $script:DeltaMagic = 'DREPO-KO-DELTA01'
